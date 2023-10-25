@@ -20,15 +20,19 @@ public class MathGameUI {
         String p1Name = scan.nextLine();
         System.out.print("Enter player 2's name: ");
         String p2Name = scan.nextLine();
+        System.out.print("Enter player 2's name: ");
+        String p3Name = scan.nextLine();
 
         // initialize Player objects and MathGame object
         Player p1 = new Player(p1Name);
         Player p2 = new Player(p2Name);
-        game = new MathGame(p1, p2, scan);
+        Player p3 = new Player(p3Name);
+        game = new MathGame(p1, p2, p3, scan);
     }
 
     private void mainMenu() {
         String playAgain = "y";
+        Player previousWinner = null;
         while (playAgain.equals("y")) {
             game.resetGame(); // reset game
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -39,7 +43,18 @@ public class MathGameUI {
             if (game.getWinner() != null) {  // check for null just to be safe (so we don't call a method on null)
                 System.out.println("The winner was " + game.getWinner().getName());   // print winner's name
                 System.out.println("with a score of " + game.getWinner().getScore()); // print winner's score
+                if (previousWinner != null) {
+                    if (previousWinner == game.getWinner()) {
+                        System.out.println(game.getWinner().getName() + " has won " + game.getWinner().getWinStreak() + " games in a row!");
+                    } else {
+                        System.out.println(game.getWinner().getName() + " has ended " + previousWinner.getName() + "'s win streak of " + previousWinner.getWinStreak() + " games!");
+                        previousWinner.resetWinStreak();
+                    }
+                }
+                game.getWinner().incrementWinStreak();
+                previousWinner = game.getWinner();
             }
+            game.resetLosingStreak();
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             System.out.print("Want to play another round? y/n: ");
             playAgain = scan.nextLine().toLowerCase(); // take input and covert to lowercase
